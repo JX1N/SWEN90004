@@ -17,20 +17,20 @@ public class Person {
         Random ran = new Random();
         locX = ran.nextInt(Parameter.MAX_WORLD_X);
         locY = ran.nextInt(Parameter.MAX_WORLD_Y);
-        initPerson();
+        initPerson(0);
         age = ran.nextInt(lifeExpectancy);
     }
 
 
     //set up the initial values for the turtle variables
-    private void initPerson() {
+    private void initPerson(double inheritedWealth) {
         Random ran = new Random();
         age = 0;
         faceDirection = ran.nextInt(4);
         lifeExpectancy = Parameter.LIFE_EXPECTANCY_MIN
                 + ran.nextInt(Parameter.LIFE_EXPECTANCY_MAX - Parameter.LIFE_EXPECTANCY_MIN + 1);
         metabolism = 1 + ran.nextInt(Parameter.METABOLISM_MAX);
-        wealth = metabolism + ran.nextInt(50);
+        wealth = inheritedWealth + metabolism + ran.nextInt(50);
         vision = 1 + ran.nextInt(Parameter.MAX_VISION);
     }
 
@@ -135,7 +135,7 @@ public class Person {
         wealth = wealth - metabolism;
         age++;
         if (wealth < 0 || age >= lifeExpectancy) {
-            initPerson();
+            initPerson(wealth * Parameter.INHERITED_PERCENTAGE);
         }
     }
 

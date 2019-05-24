@@ -16,4 +16,6 @@ public class Parameter {
 
     public static double SPREAD_PERCENTAGE = 0.25;
 
+    public static double INHERITED_PERCENTAGE = 1.0;
+
 }

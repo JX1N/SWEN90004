@@ -1,8 +1,7 @@
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Random;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class World {
     private ArrayList<Person> people = new ArrayList<>();
@@ -112,21 +111,21 @@ public class World {
         }
         Collections.sort(sortedWealth);
 
-        double highestWealth = sortedWealth.get(sortedWealth.size() - 1 );
+        double highestWealth = sortedWealth.get(sortedWealth.size() - 1);
 
-        for (int i = 0; i < people.size(); i++){
-            if(sortedWealth.get(i) <= highestWealth /3){
+        for (int i = 0; i < people.size(); i++) {
+            if (sortedWealth.get(i) <= highestWealth / 3) {
                 poorNum++;
-            }else if (sortedWealth.get(i) >= highestWealth / 3 * 2 ){
+            } else if (sortedWealth.get(i) >= highestWealth / 3 * 2) {
                 richNum++;
-            }else{
+            } else {
                 midNum++;
             }
 
             wealthSumSoFar = wealthSumSoFar + sortedWealth.get(i);
 
-            giniIndexReserve = giniIndexReserve + (double)(i + 1)/people.size() -
-                    (double) wealthSumSoFar/totalWealth;
+            giniIndexReserve = giniIndexReserve + (double) (i + 1) / people.size() -
+                    (double) wealthSumSoFar / totalWealth;
         }
 
         giniValue = giniIndexReserve / people.size() * 2;
@@ -179,7 +178,8 @@ public class World {
             updateLorenzAndGini(time);
 
         }
-        ExportCSV.exportCSV(data,"test.csv");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        ExportCSV.exportCSV(data, "Output" + dtf.format(LocalDateTime.now()) + ".csv");
 
 
     }

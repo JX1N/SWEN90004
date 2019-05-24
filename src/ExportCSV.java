@@ -8,7 +8,7 @@ public class ExportCSV {
 
 
     public static void exportCSV(ArrayList<Data> data,
-                                 String fileNmae){
+                                 String fileNmae) {
 
         // Create a new file
         File file = new File(fileNmae);
@@ -16,8 +16,7 @@ public class ExportCSV {
         OutputStreamWriter writer = null;
         BufferedWriter bw = null;
 
-        try
-        {
+        try {
             output = new FileOutputStream(file);
             writer = new OutputStreamWriter(output);
             bw = new BufferedWriter(writer);
@@ -26,10 +25,8 @@ public class ExportCSV {
             bw.append("Time tick,Poor Number,Middle Number,Rich Number,Gini Value\n");
 
             // Add data into file
-            if (!data.isEmpty())
-            {
-                for (Data record : data)
-                {
+            if (!data.isEmpty()) {
+                for (Data record : data) {
                     bw.append(record.getData()).append("\n");
                 }
             }
@@ -39,9 +36,7 @@ public class ExportCSV {
             bw.close();
 
             System.out.println("CSV file is generated successfully!");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
