@@ -13,9 +13,7 @@ public class Parameter {
     public static int PERCENT_BEST_LAND = 10;
     public static int GRAIN_GROWTH_INTERVAL = 1;
     public static int NUM_GRAIN_GROWN = 4;
-
     public static double SPREAD_PERCENTAGE = 0.25;
-
-    public static double INHERITED_PERCENTAGE = 1.0;
+    public static double INHERITED_PERCENTAGE = 0;
 
 }

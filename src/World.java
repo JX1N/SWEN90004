@@ -1,3 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -142,6 +146,40 @@ public class World {
 
     }
 
+    private void exportCSV(ArrayList<Data> data,
+                           String fileNmae) {
+
+        // Create a new file
+        File file = new File(fileNmae);
+        FileOutputStream output = null;
+        OutputStreamWriter writer = null;
+        BufferedWriter bw = null;
+
+        try {
+            output = new FileOutputStream(file);
+            writer = new OutputStreamWriter(output);
+            bw = new BufferedWriter(writer);
+
+            // Write titles of csv file
+            bw.append("Time tick,Poor Number,Middle Number,Rich Number,Gini Value\n");
+
+            // Add data into file
+            if (!data.isEmpty()) {
+                for (Data record : data) {
+                    bw.append(record.getData()).append("\n");
+                }
+            }
+
+            bw.flush();
+            bw.close();
+
+            System.out.println("CSV file is generated successfully!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void worldGo() {
         for (int time = 0; time < Parameter.MAX_TIME_TICK; time++) {
             //get people's location
@@ -179,7 +217,7 @@ public class World {
 
         }
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        ExportCSV.exportCSV(data, "Output" + dtf.format(LocalDateTime.now()) + ".csv");
+        exportCSV(data, "Output" + dtf.format(LocalDateTime.now()) + ".csv");
 
 
     }

@@ -139,76 +139,22 @@ public class Person {
         }
     }
 
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
     public double getWealth() {
         return wealth;
-    }
-
-    public void setWealth(double wealth) {
-        this.wealth = wealth;
-    }
-
-    public int getLifeExpectancy() {
-        return lifeExpectancy;
-    }
-
-    public void setLifeExpectancy(int lifeExpectancy) {
-        this.lifeExpectancy = lifeExpectancy;
-    }
-
-    public int getMetabolism() {
-        return metabolism;
-    }
-
-    public void setMetabolism(int metabolism) {
-        this.metabolism = metabolism;
-    }
-
-    public int getVision() {
-        return vision;
-    }
-
-    public void setVision(int vision) {
-        this.vision = vision;
     }
 
     public int getLocX() {
         return locX;
     }
 
-    public void setLocX(int locX) {
-        this.locX = locX;
-    }
 
     public int getLocY() {
         return locY;
     }
 
-    public void setLocY(int locY) {
-        this.locY = locY;
-    }
-
-    public World getWorld() {
-        return world;
-    }
 
     public void setWorld(World world) {
         this.world = world;
     }
 
-    public int getFaceDirection() {
-        return faceDirection;
-    }
-
-    public void setFaceDirection(int faceDirection) {
-        this.faceDirection = faceDirection;
-    }
 }
