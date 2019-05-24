@@ -1,12 +1,14 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 
 public class World {
     private ArrayList<Person> people = new ArrayList<>();
-    ArrayList<int[]> peopleLoc = new ArrayList<int[]>();
+    private ArrayList<int[]> peopleLoc = new ArrayList<>();
     private Patch[][] patches;
+    private ArrayList<Data> data = new ArrayList<>();
 
     public World() {
         initPeople();
@@ -89,13 +91,62 @@ public class World {
         System.out.println("End Init Patches");
     }
 
-    private void updateLorenzAndGini(int time){
+
+    private void updateLorenzAndGini(int time) {
+        double totalWealth = 0;
+        double wealthSumSoFar = 0;
+
+        double giniIndexReserve = 0.0;
+        double giniValue = 0.0;
+
+        ArrayList<Double> sortedWealth = new ArrayList<>();
+
+        int poorNum = 0;
+        int midNum = 0;
+        int richNum = 0;
+
+        for (Person person : people) {
+            sortedWealth.add(person.getWealth());
+            //Add wealth
+            totalWealth += person.getWealth();
+        }
+        Collections.sort(sortedWealth);
+
+        double highestWealth = sortedWealth.get(sortedWealth.size() - 1 );
+
+        for (int i = 0; i < people.size(); i++){
+            if(sortedWealth.get(i) <= highestWealth /3){
+                poorNum++;
+            }else if (sortedWealth.get(i) >= highestWealth / 3 * 2 ){
+                richNum++;
+            }else{
+                midNum++;
+            }
+
+            wealthSumSoFar = wealthSumSoFar + sortedWealth.get(i);
+
+            giniIndexReserve = giniIndexReserve + (double)(i + 1)/people.size() -
+                    (double) wealthSumSoFar/totalWealth;
+        }
+
+        giniValue = giniIndexReserve / people.size() * 2;
+
+        Data record = new Data();
+        record.setTimeTick(time);
+        record.setPoorNum(poorNum);
+        record.setMiddleNum(midNum);
+        record.setRichNum(richNum);
+        record.setGiniValue(giniValue);
+
+        data.add(record);
+
 
     }
 
     public void worldGo() {
         for (int time = 0; time < Parameter.MAX_TIME_TICK; time++) {
             //get people's location
+            peopleLoc = new ArrayList<int[]>();
             for (Person p : people) {
                 int[] point = new int[2];
                 point[0] = p.getLocX();
@@ -127,38 +178,8 @@ public class World {
 
             updateLorenzAndGini(time);
 
-
-            //test delete later
-            int numPoor = 0;
-            int numMid = 0;
-            int numRich = 0;
-            double maxWealth = 0;
-            Person maxP = new Person();
-            int i = 0;
-            double[] wealth = new double[Parameter.NUM_PEOPLE];
-            for (Person p : people) {
-                wealth[i] = p.getWealth();
-                if (wealth[i] > maxWealth) {
-                    maxWealth = wealth[i];
-                    maxP = p;
-                }
-                i++;
-            }
-            for (i = 0; i < Parameter.NUM_PEOPLE; i++) {
-                if (wealth[i] <= maxWealth / 3) {
-                    numPoor++;
-                } else if (wealth[i] >= maxWealth * 2 / 3) {
-                    numRich++;
-                } else {
-                    numMid++;
-                }
-            }
-
-            if(numRich == 1){
-                System.out.println(maxP.getWealth());
-            }
-            System.out.println("time :" + time + " - poor: " + numPoor + " || mid: " + numMid + " || rich: " + numRich);
         }
+        ExportCSV.exportCSV(data,"test.csv");
 
 
     }
@@ -188,7 +209,8 @@ public class World {
     //diffuse grain to its 8 neighbors
     public void diffuseGrain(int x, int y) {
         int neighbors = 8;
-        double grainDiffuseNum = (patches[x][y].getGrainHere() * Parameter.SPEARD_PERCENTAGE) / neighbors;
+        double grainDiffuseNum = (patches[x][y].getGrainHere() * Parameter.SPREAD_PERCENTAGE) / neighbors;
+        patches[x][y].setGrainHere(patches[x][y].getGrainHere() * (1 - Parameter.SPREAD_PERCENTAGE));
 
         for (int i = -1; i <= 1; i++)
             for (int j = -1; j <= 1; j++) {
@@ -199,26 +221,24 @@ public class World {
                 // set neighbor's location (currentX, currentY)
                 // if the location is out of bound, it will be set to the other side
                 int currentX, currentY;
-                if (x + i  >= 0 ) {
-                    if (x + i < Parameter.MAX_WORLD_X ) {
+                if (x + i >= 0) {
+                    if (x + i < Parameter.MAX_WORLD_X) {
                         currentX = x + i;
-                    }
-                    else {
+                    } else {
                         currentX = x + i - Parameter.MAX_WORLD_X;
                     }
-                } else{
+                } else {
                     currentX = x + i + Parameter.MAX_WORLD_X;
                 }
 
-                if (y + j  >= 0 ) {
-                    if (y + j < Parameter.MAX_WORLD_Y ) {
+                if (y + j >= 0) {
+                    if (y + j < Parameter.MAX_WORLD_Y) {
                         currentY = y + j;
-                    }
-                    else {
+                    } else {
                         currentY = y + j - Parameter.MAX_WORLD_Y;
                     }
-                } else{
-                    currentY = y + j +Parameter.MAX_WORLD_Y;
+                } else {
+                    currentY = y + j + Parameter.MAX_WORLD_Y;
                 }
 
                 patches[currentX][currentY].setGrainHere(patches[currentX][currentY].getGrainHere() + grainDiffuseNum);

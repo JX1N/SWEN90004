@@ -48,7 +48,6 @@ public class Person {
             } else {
                 total = total + world.getGrain(locX, locY + i - Parameter.MAX_WORLD_Y);
             }
-            ;
         }
         if (total > bestTotal) {
             bestDirection = 0;
@@ -63,7 +62,6 @@ public class Person {
             } else {
                 total = total + world.getGrain(locX + i - Parameter.MAX_WORLD_X, locY);
             }
-            ;
         }
         if (total > bestTotal) {
             bestDirection = 1;
@@ -111,25 +109,25 @@ public class Person {
         switch (faceDirection) {
             case 0:
                 locY++;
-                if (locY >= Parameter.MAX_WORLD_Y){
-                    locY = locY -Parameter.MAX_WORLD_Y;
+                if (locY >= Parameter.MAX_WORLD_Y) {
+                    locY = locY - Parameter.MAX_WORLD_Y;
                 }
                 break;
             case 1:
                 locX++;
-                if (locX >= Parameter.MAX_WORLD_X){
-                    locX = locX -Parameter.MAX_WORLD_X;
+                if (locX >= Parameter.MAX_WORLD_X) {
+                    locX = locX - Parameter.MAX_WORLD_X;
                 }
                 break;
             case 2:
                 locY--;
-                if (locY < 0){
+                if (locY < 0) {
                     locY = locY + Parameter.MAX_WORLD_Y;
                 }
                 break;
             case 3:
                 locX--;
-                if (locX < 0){
+                if (locX < 0) {
                     locX = locX + Parameter.MAX_WORLD_X;
                 }
                 break;
