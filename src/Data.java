@@ -1,3 +1,7 @@
+/**
+ * Data class stores and organizes the data gathered in each time tick, like Gini index and number
+ * of people in each class. These data will be exported in a CSV when world runs out of time ticks.
+ */
 public class Data {
 
     // The time tick of the system
@@ -7,7 +11,7 @@ public class Data {
     private int richNum;
     private double giniValue;
 
-
+    //output a data string
     public String getData() {
         String data = this.timeTick + "," + this.poorNum + "," + this.middleNum +
                 "," + this.richNum + "," + this.giniValue;

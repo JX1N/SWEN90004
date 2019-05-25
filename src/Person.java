@@ -1,5 +1,16 @@
 import java.util.Random;
 
+/**
+ * This class is used to describe one person’s (turtle in NetLogo model) behaviors and information.
+ * It contains attributes like age, wealth, vision, location and so on. It has three methods to
+ * describe person’s behaviors in each time tick:
+ * 1) Determine the direction to go in next time tick.
+ * 2) Harvest in this time tick.
+ * 2) Move, consume grain, grow age and judge whether this person will die or not in this time tick
+ * All entities will be given random initial values when it is created. When one person dies, the
+ * entity will not be destroyed. It will be given new random values to its attributes except
+ * the location.
+ */
 public class Person {
     private int age;
     private double wealth;
@@ -28,7 +39,8 @@ public class Person {
         age = 0;
         faceDirection = ran.nextInt(4);
         lifeExpectancy = Parameter.LIFE_EXPECTANCY_MIN
-                + ran.nextInt(Parameter.LIFE_EXPECTANCY_MAX - Parameter.LIFE_EXPECTANCY_MIN + 1);
+                + ran.nextInt(Parameter.LIFE_EXPECTANCY_MAX
+                - Parameter.LIFE_EXPECTANCY_MIN + 1);
         metabolism = 1 + ran.nextInt(Parameter.METABOLISM_MAX);
         wealth = inheritedWealth + metabolism + ran.nextInt(50);
         vision = 1 + ran.nextInt(Parameter.MAX_VISION);
@@ -132,8 +144,17 @@ public class Person {
                 }
                 break;
         }
+
+        //consume some grain according to metabolism
         wealth = wealth - metabolism;
+
+        //grow older
         age++;
+
+        // check for death conditions: if you have no grain or
+        //  you're older than the life expectancy or if some random factor
+        //  holds, then you "die" and are "reborn" (in fact, your variables
+        //  are just reset to new random values)
         if (wealth < 0 || age >= lifeExpectancy) {
             initPerson(wealth * Parameter.INHERITED_PERCENTAGE);
         }

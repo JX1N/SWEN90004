@@ -2,11 +2,20 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * The World class simulates how the system will run. Firstly, it initializes person and patch.
+ * Then, in each time tick, it runs events as the same order as NetLogo’s model:
+ * 1) Ask person to choose their direction in next time tick
+ * 2) Ask person to harvest
+ * 3) Ask person to move, eat, grow age and judge statement.
+ * 4) Ask grain to grow if the time tick can exact divisible by grain grow interval
+ * 5) calculate the Gini Index.
+ * When the time tick is run out, world will export data into a CSV file.
+ */
 public class World {
     private ArrayList<Person> people = new ArrayList<>();
     private ArrayList<int[]> peopleLoc = new ArrayList<>();
@@ -95,6 +104,8 @@ public class World {
     }
 
 
+    // this procedure recomputes the value of gini-index-reserve
+    // and the points in lorenz-points for the Lorenz and Gini-Index plots
     private void updateLorenzAndGini(int time) {
         double totalWealth = 0;
         double wealthSumSoFar = 0;
@@ -110,7 +121,6 @@ public class World {
 
         for (Person person : people) {
             sortedWealth.add(person.getWealth());
-            //Add wealth
             totalWealth += person.getWealth();
         }
         Collections.sort(sortedWealth);
@@ -141,16 +151,16 @@ public class World {
         record.setRichNum(richNum);
         record.setGiniValue(giniValue);
 
+        //add this time tick data into total data
         data.add(record);
 
 
     }
 
-    private void exportCSV(ArrayList<Data> data,
-                           String fileNmae) {
-
+    //export function
+    private void exportCSV(ArrayList<Data> data, String fileName) {
         // Create a new file
-        File file = new File(fileNmae);
+        File file = new File(fileName);
         FileOutputStream output = null;
         OutputStreamWriter writer = null;
         BufferedWriter bw = null;
@@ -180,6 +190,7 @@ public class World {
 
     }
 
+    // start simulator, the system will runn the events follow the order in Netlogo model
     public void worldGo() {
         for (int time = 0; time < Parameter.MAX_TIME_TICK; time++) {
             //get people's location
@@ -213,9 +224,12 @@ public class World {
                 patchesGrowGrain();
             }
 
+            //calculate the Gini index
             updateLorenzAndGini(time);
 
         }
+
+        //output data
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         exportCSV(data, "Output" + dtf.format(LocalDateTime.now()) + ".csv");
 
@@ -247,8 +261,10 @@ public class World {
     //diffuse grain to its 8 neighbors
     public void diffuseGrain(int x, int y) {
         int neighbors = 8;
-        double grainDiffuseNum = (patches[x][y].getGrainHere() * Parameter.SPREAD_PERCENTAGE) / neighbors;
-        patches[x][y].setGrainHere(patches[x][y].getGrainHere() * (1 - Parameter.SPREAD_PERCENTAGE));
+        double grainDiffuseNum = (patches[x][y].getGrainHere() * Parameter.SPREAD_PERCENTAGE)
+                / neighbors;
+        patches[x][y].setGrainHere(patches[x][y].getGrainHere()
+                * (1 - Parameter.SPREAD_PERCENTAGE));
 
         for (int i = -1; i <= 1; i++)
             for (int j = -1; j <= 1; j++) {
@@ -279,7 +295,8 @@ public class World {
                     currentY = y + j + Parameter.MAX_WORLD_Y;
                 }
 
-                patches[currentX][currentY].setGrainHere(patches[currentX][currentY].getGrainHere() + grainDiffuseNum);
+                patches[currentX][currentY].setGrainHere(patches[currentX][currentY].getGrainHere()
+                        + grainDiffuseNum);
             }
     }
 
